@@ -1,5 +1,5 @@
 import { cn } from '@coinbase/onchainkit/theme';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useTransactionCount } from 'wagmi';
 import { AGENT_WALLET_ADDRESS, DEFAULT_PROMPT } from '../constants';
 import useChat from '../hooks/useChat';
@@ -32,34 +32,25 @@ export default function Stream({ className }: StreamProps) {
     };
     setIsThinking(false);
     setStreamEntries((prev) => [...prev, streamEntry]);
-    setTimeout(() => {
-      setIsThinking(true);
-    }, 800);
   }, []);
 
   const { postChat, isLoading } = useChat({
     onSuccess: handleSuccess,
   });
 
-  // enables live stream of agent thoughts
+  // Realiza una sola solicitud al cargar
   useEffect(() => {
-    const streamInterval = setInterval(() => {
-      if (!isLoading) {
-        postChat(DEFAULT_PROMPT);
-      }
-    }, 6000);
-
-    return () => {
-      clearInterval(streamInterval);
-    };
+    if (!isLoading) {
+      postChat(DEFAULT_PROMPT);
+    }
   }, [isLoading, postChat]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: Dependency is required
+  // Mantén el autoscroll al fondo cuando cambien las entradas
   useEffect(() => {
-    // scrolls to the bottom of the chat when messages change
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [streamEntries]);
 
+  // Añade animación para los puntos suspensivos
   useEffect(() => {
     const dotsInterval = setInterval(() => {
       setLoadingDots((prev) => (prev.length >= 3 ? '' : `${prev}.`));
