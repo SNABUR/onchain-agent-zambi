@@ -13,24 +13,20 @@ type StreamProps = {
 
 export default function Stream({ className }: StreamProps) {
   const [streamEntries, setStreamEntries] = useState<StreamEntry[]>([]);
-  const [isThinking, setIsThinking] = useState(true);
-  const [loadingDots, setLoadingDots] = useState('');
+  const [isThinking, setIsThinking] = useState(false);
+  const [shouldFetch, setShouldFetch] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const handleSuccess = useCallback((messages: AgentMessage[]) => {
-    let message = messages.find((res) => res.event === 'agent');
-    if (!message) {
-      message = messages.find((res) => res.event === 'tools');
-    }
-    if (!message) {
-      message = messages.find((res) => res.event === 'error');
-    }
+    const message = messages.find((res) => res.event === 'agent');
+    if (!message) return;
+
     const streamEntry: StreamEntry = {
       timestamp: new Date(),
-      content: markdownToPlainText(message?.data || ''),
+      content: markdownToPlainText(message.data || ''),
       type: 'agent',
     };
-    setIsThinking(false);
+
     setStreamEntries((prev) => [...prev, streamEntry]);
   }, []);
 
@@ -38,36 +34,30 @@ export default function Stream({ className }: StreamProps) {
     onSuccess: handleSuccess,
   });
 
-  // Realiza una sola solicitud al cargar
+  // Solicita una sola vez al cargar
   useEffect(() => {
-    if (!isLoading) {
+    postChat(DEFAULT_PROMPT);
+  }, [postChat]);
+
+  // Control de observación manual
+  useEffect(() => {
+    if (shouldFetch && !isLoading) {
       postChat(DEFAULT_PROMPT);
     }
-  }, [isLoading, postChat]);
+  }, [shouldFetch, isLoading, postChat]);
 
-  // Mantén el autoscroll al fondo cuando cambien las entradas
+  // Autoscroll al fondo
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [streamEntries]);
 
-  // Añade animación para los puntos suspensivos
-  useEffect(() => {
-    const dotsInterval = setInterval(() => {
-      setLoadingDots((prev) => (prev.length >= 3 ? '' : `${prev}.`));
-    }, 500);
-
-    return () => clearInterval(dotsInterval);
-  }, []);
-
-  const { data: transactionCount } = useTransactionCount({
-    address: AGENT_WALLET_ADDRESS,
-    query: { refetchInterval: 5000 },
-  });
-
   return (
     <div className={cn('flex w-full flex-col md:flex md:w-1/2', className)}>
       <div className="flex items-center border-[#5788FA]/50 border-b p-2">
-        Total transactions: {transactionCount}
+        Total transactions: {useTransactionCount({
+          address: AGENT_WALLET_ADDRESS,
+          query: { refetchInterval: 5000 },
+        }).data}
       </div>
       <div className="max-w-full flex-grow overflow-y-auto p-4 pb-20">
         <p className="text-zinc-500">Streaming real-time...</p>
@@ -81,13 +71,18 @@ export default function Stream({ className }: StreamProps) {
         </div>
         {isThinking && (
           <div className="mt-4 flex items-center text-[#5788FA] opacity-70">
-            <span className="max-w-full font-mono">
-              Agent is observing
-              {loadingDots}
-            </span>
+            <span className="max-w-full font-mono">Agent is observing...</span>
           </div>
         )}
         <div className="mt-3" ref={bottomRef} />
+      </div>
+      <div className="p-4">
+        <button
+          onClick={() => setShouldFetch((prev) => !prev)}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          {shouldFetch ? 'Stop Observing' : 'Start Observing'}
+        </button>
       </div>
     </div>
   );
