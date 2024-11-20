@@ -13,7 +13,6 @@ type StreamProps = {
 
 export default function Stream({ className }: StreamProps) {
   const [streamEntries, setStreamEntries] = useState<StreamEntry[]>([]);
-  const [isThinking, setIsThinking] = useState(false);
   const [shouldFetch, setShouldFetch] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -69,11 +68,6 @@ export default function Stream({ className }: StreamProps) {
             />
           ))}
         </div>
-        {isThinking && (
-          <div className="mt-4 flex items-center text-[#5788FA] opacity-70">
-            <span className="max-w-full font-mono">Agent is observing...</span>
-          </div>
-        )}
         <div className="mt-3" ref={bottomRef} />
       </div>
       <div className="p-4">
