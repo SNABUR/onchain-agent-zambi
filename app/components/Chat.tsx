@@ -110,30 +110,37 @@ export default function Chat({ className, getNFTs, getTokens }: ChatProps) {
     <div
       className={cn(
         'flex h-full w-full flex-col border-[#5788FA]/50 md:flex md:w-1/2 md:border-r',
-        className,
+        className, // Porque el estilo importa, incluso en la depresión del frontend
       )}
     >
+      {/* La sección donde fingimos que sabemos lo que el usuario está pensando */}
       <div className="flex grow flex-col overflow-y-auto p-4 pb-20">
-        <p className="text-zinc-500">What&apos;s on your mind...</p>
+        <p className="text-zinc-500">
+          What&apos;s on your mind... {/* Spoiler: probablemente pizza */}
+        </p>
         <div className="mt-4 space-y-2" role="log" aria-live="polite">
+          {/* Aquí iteramos sobre el "streamEntries" porque sí, el usuario necesita ver cada palabra */}
           {streamEntries.map((entry, index) => (
             <StreamItem
-              key={`${entry.timestamp.toDateString()}-${index}`}
-              entry={entry}
+              key={`${entry.timestamp.toDateString()}-${index}`} // Las claves son la única razón por la que React no nos odia
+              entry={entry} // Lo que sea que esté aquí, seguro parece importante
             />
           ))}
         </div>
-
+  
+        {/* Este div vacío es el héroe silencioso que asegura que todo se vea bien */}
         <div className="mt-3" ref={bottomRef} />
       </div>
-
+  
+      {/* Porque incluso los bots necesitan que les escriban */}
       <ChatInput
-        userInput={userInput}
-        handleKeyPress={handleKeyPress}
-        handleSubmit={handleSubmit}
-        setUserInput={setUserInput}
-        disabled={isLoading}
+        userInput={userInput} // Lo que el usuario intenta decir mientras sus gatos caminan por el teclado
+        handleKeyPress={handleKeyPress} // Porque los enter accidental son reales
+        handleSubmit={handleSubmit} // Donde la magia (o los errores) realmente suceden
+        setUserInput={setUserInput} // Probablemente un "hahaha" o un emoji que el backend no soporta
+        disabled={isLoading} // Lo desactivamos cuando estamos demasiado ocupados fingiendo que trabajamos
       />
     </div>
   );
+  
 }

@@ -57,50 +57,54 @@ export default function AgentProfile() {
     <div className="p-4">
       <div className="flex flex-col space-y-4 py-2">
         <div className="flex items-center space-x-5">
+          {/* El avatar: un círculo que sabe demasiado sobre tu vida */}
           <svg
-            ref={avatarRef}
+            ref={avatarRef} // Porque el avatar necesita saber quién lo está mirando
             width="70"
             height="70"
             viewBox="0 0 100 100"
-            className="bg-[#5788FA]"
+            className="bg-[#5788FA]" // Azul dramático porque sí
             role="img"
             aria-label="Animated avatar"
           >
-            <circle cx="50" cy="50" r="45" fill="#000000" />
+            <circle cx="50" cy="50" r="45" fill="#000000" /> {/* La cara seria del avatar */}
             <circle
-              cx={eyePosition.x}
+              cx={eyePosition.x} // Ojos que te siguen mientras intentas huir de tus responsabilidades
               cy={eyePosition.y}
               r="5"
-              fill="#5788FA"
+              fill="#5788FA" // Azul porque combina con su drama
             />
           </svg>
-
+  
+          {/* Info del agente: porque el ego también necesita diseño */}
           <div className="flex flex-col justify-center space-y-2">
             <div className="flex items-center justify-center gap-2">
-              <h2 className="font-bold text-[#5788FA] text-xl">{AGENT_NAME}</h2>
+              <h2 className="font-bold text-[#5788FA] text-xl">{AGENT_NAME}</h2> {/* El nombre del agente con más estilo que un influencer */}
               <button
                 type="button"
-                onClick={copyToClipboard}
+                onClick={copyToClipboard} // "Copiar" porque a veces escribir es mucho trabajo
                 className="rounded-sm bg-blue-900 bg-opacity-30 p-1 px-2 text-[#5788FA] text-sm transition-colors hover:text-[#3D7BFF]"
               >
-                {formattedAddress}
+                {formattedAddress || "0xWhoAmI..."} {/* La dirección misteriosa que probablemente nadie entiende */}
               </button>
               {showToast && (
                 <div className="absolute top-full left-0 mt-2 rounded-xs bg-[#5788FA] px-2 py-1 text-xs text-zinc-950">
-                  Copied
+                  Copied {/* Porque copiar cosas sin decirle a la gente no es ético */}
                 </div>
               )}
             </div>
             <div className="group relative inline-flex items-center">
-              <AgentBalance />
+              <AgentBalance /> {/* ¿Dinero virtual? Más vale que lo sea */}
             </div>
           </div>
         </div>
-
+  
+        {/* Mensaje filosófico del agente: más profundo que tu feed de Instagram */}
         <p className="text-[#5788FA] text-base">
-          I observe, imagine, and create onchain.
+          I observe, imagine, and create onchain. {/* Traducción: "Estoy aquí para impresionarte" */}
         </p>
       </div>
     </div>
   );
+  
 }
