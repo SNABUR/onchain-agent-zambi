@@ -7,6 +7,7 @@ import AgentProfile from './AgentProfile';
 import Chat from './Chat';
 import Navbar from './Navbar';
 import Stream from './Stream';
+import LoginButton  from './LoginButton'; // Importa el botón de conexión
 
 export default function Agent() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,6 +28,10 @@ export default function Agent() {
     isMobileChatOpen={isMobileChatOpen} // Porque los chats también merecen atención
     setIsMobileChatOpen={setIsMobileChatOpen} // El control absoluto del caos
   />
+  
+  <div className="absolute top-4 right-4 z-10">
+        <LoginButton />
+      </div>
 
   {/* La máquina de productividad: dividida en módulos esenciales */}
   <div className="relative flex flex-grow overflow-hidden">
